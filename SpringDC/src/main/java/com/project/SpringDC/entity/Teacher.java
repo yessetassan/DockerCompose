@@ -1,5 +1,6 @@
 package com.project.SpringDC.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,7 @@ public class Teacher {
     private String email;
 
     @Column(name = "birthday")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate localDate;
 
     @ManyToMany(mappedBy = "teachers")
