@@ -2,8 +2,8 @@ version: '3.8'
 
 services:
   app:
-    container_name: java_app_crud
-    image: java_app_crud
+    container_name: java_api_crud
+    image: java_api_crud
     build: .
     ports:
       - "8080:8080"
