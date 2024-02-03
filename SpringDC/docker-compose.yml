@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  app:
+    container_name: java_app_crud
+    image: java_app_crud
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/java_db_crud
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=Qasaqayj7
+      - SPRING_SQL_INIT_MODE=always
+      - SPRING_DATASOURCE_INITIALIZE=true
+      - SPRING_SQL_INIT_SCHEMA_LOCATIONS=classpath:/migration.sql
+      - SPRING_SQL_INIT_CONTINUE_ON_ERROR=true
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - postgresql
+    volumes:
+      - ./migration.sql:/migration.sql
+
+  postgresql:
+    image: postgres
+    container_name: postgresql
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=Qasaqayj7
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=java_db_crud
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: 'C:/pgdata'
