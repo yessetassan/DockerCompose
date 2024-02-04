@@ -1,16 +1,12 @@
 package com.project.SpringDC.rest;
 
-
 import com.project.SpringDC.entity.Student;
 import com.project.SpringDC.entity.Teacher;
 import com.project.SpringDC.service.SService;
 import com.project.SpringDC.service.TService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 import java.util.Set;
@@ -28,24 +24,32 @@ public class RestStudentTeacher {
         this.tService = tService;
     }
 
+    @GetMapping()
+    public String message() {
+        return "GG";
+    }
+
     @PostMapping("/{s_id}/{t_id}")
     public ResponseEntity<String> save(@PathVariable(name = "s_id") Integer s_id,
                                        @PathVariable(name = "t_id") Integer t_id) {
-        Optional<Student> student = sService.findById(s_id);
-        Optional<Teacher> teacher = tService.findById(t_id);
+        Optional<Student> studentOpt = sService.findById(s_id);
+        Optional<Teacher> teacherOpt = tService.findById(t_id);
 
-        if (student.isPresent() || teacher.isPresent()) {
-            return ResponseEntity.badRequest().body("One of them doesn't exist !");
+        if (!studentOpt.isPresent() || !teacherOpt.isPresent()) {
+            return ResponseEntity.badRequest().body("Either student or teacher doesn't exist.");
         }
 
-        Student s = student.get();
-        Teacher t = teacher.get();
+        Student student = studentOpt.get();
+        Teacher teacher = teacherOpt.get();
 
-        Set<Teacher> teacherSet = s.getTeachers();
-        teacherSet.add(t);
-        s.setTeachers(teacherSet);
-        sService.save(s);
-
-        return ResponseEntity.ok().body("Successfully Saved !");
+        Set<Teacher> teachers = student.getTeachers();
+        if (!teachers.contains(teacher)) {
+            teachers.add(teacher);
+            student.setTeachers(teachers);
+            sService.save(student);
+            return ResponseEntity.ok().body("Association successfully created.");
+        } else {
+            return ResponseEntity.badRequest().body("Association already exists.");
+        }
     }
 }

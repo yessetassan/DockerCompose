@@ -1,5 +1,6 @@
 package com.project.SpringDC.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
@@ -40,6 +41,7 @@ public class Teacher {
     private LocalDate localDate;
 
     @ManyToMany(mappedBy = "teachers")
+    @JsonBackReference
     private Set<Student> students;
 
     @Override

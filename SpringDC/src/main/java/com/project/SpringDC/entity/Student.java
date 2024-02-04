@@ -1,5 +1,6 @@
 package com.project.SpringDC.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,12 +32,14 @@ public class Student {
     )
     private String email;
 
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "student_teacher",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "teacher_id")
     )
+    @JsonManagedReference
     private Set<Teacher> teachers;
 
     @Override
